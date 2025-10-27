@@ -12,7 +12,7 @@ export default async function Home() {
   const data = await getAgencies();
 
   return (
-    <main>
+    <main className="p-4 sm:p-6 lg:p-8">
       <AgencyTable agencies={data.agencies} />
     </main>
   );
