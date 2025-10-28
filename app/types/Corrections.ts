@@ -30,7 +30,7 @@ export interface CorrectionsResponse {
 }
 
 interface CFRHierarchy {
-  title: string;          // always a string in corrections
+  title: string;
   subtitle?: string;
   chapter: string;
   part?: string;

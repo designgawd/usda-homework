@@ -4,6 +4,7 @@ import * as React from 'react';
 import Image from 'next/image';
 import { Agency, Order, SortableAgencyKeys } from '@/app/types/Agencies';
 import { getComparator, stableSort } from '@/app/utils/sort';
+import AgencyRow from './AgencyRow';
 
 interface AgencyTableProps {
   agencies: Agency[];
@@ -30,7 +31,7 @@ export default function AgencyTable({ agencies }: AgencyTableProps) {
   };
 
   const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -42,7 +43,7 @@ export default function AgencyTable({ agencies }: AgencyTableProps) {
 
   const processedAgencies = agencies.map((agency) => ({
     ...agency,
-    id: agency.slug, // Use slug as a unique id
+    id: agency.slug,
   }));
 
   const filteredAgencies = processedAgencies.filter((agency) => {
@@ -78,63 +79,40 @@ export default function AgencyTable({ agencies }: AgencyTableProps) {
           <thead className="bg-blue-600 text-white hidden md:block">
             <tr className='grid grid-cols-1 md:grid-cols-12 text-sm items-end'>
               <th className="py-3 px-6 text-left col-span-1 md:col-span-4">
-                <button onClick={(event) => handleRequestSort(event, 'name')} className="flex items-center">
+                <button onClick={(event) => handleRequestSort(event, 'name')} className="flex items-center underline">
                   Name
                   <span>{orderBy === 'name' ? (order === 'asc' ? ' ↑' : ' ↓') : ''}</span>
                 </button>
               </th>
               <th className="py-3 px-6 text-left md:col-span-2">
-                <button onClick={(event) => handleRequestSort(event, 'cfr_references')} className="flex items-center">
+                <button onClick={(event) => handleRequestSort(event, 'cfr_references')} className="flex items-center underline">
                   CFR References Links
                   <span>{orderBy === 'cfr_references' ? (order === 'asc' ? ' ↑' : ' ↓') : ''}</span>
                 </button>
               </th>
               <th className="py-3 px-6 text-left md:col-span-2 font-normal">
-                  Reading Time
+                  Total Read Time
               </th>
-              <th className="py-3 px-6 text-center md:col-span-1 font-normal">
-                  Sub Agencies
-              </th>
-              <th className="py-3 px-6 text-left md:col-span-1">
-                <button onClick={(event) => handleRequestSort(event, 'correctionCount')} className="flex items-center">
+              <th className="py-3 px-4 text-left md:col-span-1">
+                <button onClick={(event) => handleRequestSort(event, 'correctionCount')} className="flex items-center underline">
                   ECFR Corrections
                   <span>{orderBy === 'correctionCount' ? (order === 'asc' ? ' ↑' : ' ↓') : ''}</span>
                 </button>
               </th>
-              <td className="py-3 px-6 text-left md:col-span-2 text-xs">
-                    0
-                  </td>
+              
+              <th className="py-3 px-6 text-center md:col-span-1 font-normal">
+                  Sub Agencies
+              </th>
+              <td className="py-3 px-6 text-center md:col-span-2 text-sm">
+                Checksum Icon
+              </td>
             </tr>
           </thead>
           <tbody className="text-gray-700">
             {sortedAgencies
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((agency, index) => (
-                <tr key={agency.id} className={`${index % 2 === 0 ? 'bg-gray-100' : ''} grid grid-cols-1 md:grid-cols-12 items-start`}>
-                  <td className="py-3 px-6 text-left md:col-span-4 text-sm">{agency.name} ({agency.short_name})</td>
-                  <td className="py-3 px-6 text-left md:col-span-2">
-                    {agency.cfr_references
-                      .map((ref, key) => (
-                          <p key={key} className='text-sm'>Title {ref.title}, Chapter {ref.chapter}</p>
-                      ))}
-                  </td>
-                  <td className="py-3 px-6 text-left md:col-span-2 text-xs">
-                    <p>Reading Time:</p>
-                    <p>Document Count:</p>
-                  </td>
-                  <td className="py-3 px-6 text-center md:col-span-1 text-xs">
-                    {agency.children.length}
-                  </td>
-                  <td className="py-3 px-6 text-center md:col-span-1 text-xs">
-                    {agency.correctionCount}
-                  </td>
-                  <td className="py-3 px-6 text-left md:col-span-2 text-xs">
-                    0
-                  </td>
-                  <td className="py-3 px-6 text-left md:col-span-12 text-xs bg-white">
-                    GRAPHJ AREA
-                  </td>
-                </tr>
+                <AgencyRow key={agency.id} agency={agency} index={index} />
               ))}
           </tbody>
         </table>

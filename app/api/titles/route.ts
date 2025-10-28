@@ -1,11 +1,9 @@
-// app/api/agencies/route.ts
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
 
-// In-memory cache
 let cachedAgencies: AgencyData[] | null = null;
 let lastFetched = 0;
-const CACHE_TTL = 3600 * 1000; // 1 hour in ms
+const CACHE_TTL = 3600 * 1000;
 
 type AgencyData = {
     title: number;
@@ -17,14 +15,13 @@ type AgencyData = {
 };
 
 export async function GET() {
-    //Return cached data if fresh
+    console.log("GETTING TITLES")
     if (cachedAgencies && Date.now() - lastFetched < CACHE_TTL) {
         console.log("USING CACHE")
         return NextResponse.json(cachedAgencies);
     }
 
     try {
-        // 1. Fetch titles
         const titlesRes = await fetch("https://www.ecfr.gov/api/versioner/v1/titles.json", {
             next: { revalidate: 86400 },
             headers: {
@@ -36,12 +33,9 @@ export async function GET() {
 
         const titlesText = await titlesRes.text();
         const titles = JSON.parse(titlesText);
-
-        // 2. Download & parse one title at a time (example: Title 7)
         const agencies: AgencyData[] = [];
 
         for (const t of titles.titles) {
-            // Limit for demo
             const xmlRes = await fetch(
                 `https://www.ecfr.gov/api/versioner/v1/full/${t.up_to_date_as_of}/title-${t.number}.xml`,{
                     headers: {
@@ -71,7 +65,6 @@ export async function GET() {
             });
         }
 
-        // 3. Cache result
         cachedAgencies = agencies;
         lastFetched = Date.now();
 

@@ -5,6 +5,7 @@ export interface CfrReference {
   title: number;
   chapter: string;
   corrections?: Correction[];
+  details?: TitleDetail;
 }
 
 export interface Agency {
@@ -17,6 +18,8 @@ export interface Agency {
   children: Agency[];
   cfr_references: CfrReference[];
   correctionCount: number;
+  totalWordCount: number;
+  totalCheckSum: string;
 }
 
 export interface AgenciesResponse {
@@ -26,3 +29,12 @@ export interface AgenciesResponse {
 export type Order = 'asc' | 'desc';
 
 export type SortableAgencyKeys = keyof Omit<Agency, 'children' | 'slug' | 'display_name' | 'sortable_name' | 'id'>;
+
+export interface TitleDetail {
+  title: number;
+  name: string;
+  agency: string;
+  wordCount: number;
+  checksum: string;
+  sectionCount: number;
+}

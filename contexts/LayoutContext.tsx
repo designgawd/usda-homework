@@ -1,14 +1,12 @@
 "use client";
 import { createContext, useContext } from "react";
 import { AgenciesResponse } from "@/app/types/Agencies";
-import { TitlesResponse } from "@/app/types/Titles";
 import { CorrectionsResponse } from "@/app/types/Corrections";
 
 
 
 export interface USDAdata {
     agencies: AgenciesResponse,
-    titles: TitlesResponse,
     corrections: CorrectionsResponse,
 }
 

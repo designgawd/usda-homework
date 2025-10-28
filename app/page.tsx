@@ -1,31 +1,32 @@
 "use client";
+import { useEffect, useState, useRef } from "react";
 import AgencyTable from "./components/AgencyTable";
 import { useLayoutData } from "@/contexts/LayoutContext";
-import { Agency } from "./types/Agencies";
+import { Agency, TitleDetail } from "./types/Agencies";
 import { Correction } from "./types/Corrections";
 
 export default function Home() {
-    const { agencies, corrections, titles } = useLayoutData();
+    const { agencies, corrections } = useLayoutData();
+    const [titles, setTitles] = useState<TitleDetail[]>();
+    const effectRan = useRef(false);
 
-    // console.log("Agencies",agencies.agencies)
-    // console.log("Correctionsn",corrections.ecfr_corrections)
-    console.log("Titles", titles);
+    useEffect(() => {
+        if (!effectRan.current) {
+            effectRan.current = true;
+            const getTitlesWithDetails = async () => {
+                const res = await fetch("/api/titles");
+                const titlesRes = await res.json();
+                setTitles(titlesRes);
+            };
+            getTitlesWithDetails();
+        }
+    });
 
-    /**
-     * Mutates the `agencies` array: every `cfr_references` entry that
-     * matches a correction (by title + chapter) receives a `corrections`
-     * array containing the matching correction objects.
-     *
-     * @param agencies   Source agency list
-     * @param corrections List of correction records
-     * @returns The same `agencies` array (now with `corrections` fields)
-     */
     function applyCorrections(
         agencies: Agency[],
         corrections: Correction[]
     ): Agency[] {
-        // ---------- 1. Build a fast lookup map ----------
-        // key = `${title}-${chapter}`  (both are strings)
+
         const correctionMap = new Map<string, Correction[]>();
 
         for (const corr of corrections) {
@@ -40,54 +41,100 @@ export default function Home() {
             }
         }
 
-        // ---------- 2. Attach corrections to agencies ----------
         for (const agency of agencies) {
             for (const cfr of agency.cfr_references) {
-                // Agency `title` is a number → convert to string for the key
+
                 const key = `${cfr.title}-${cfr.chapter}`;
                 const matches = correctionMap.get(key) ?? [];
 
-                // Always assign an array (empty if no matches)
-                cfr.corrections = matches.slice(); // .slice() gives a shallow copy
+                cfr.corrections = matches.slice(); 
             }
         }
 
         return agencies;
     }
 
-    /**
-     * Counts how many corrections are attached to each agency.
-     *
-     * @param agencies  The agencies array **after** `applyCorrections` has run.
-     * @returns An array of objects: `{ agencyName: string, correctionCount: number }`
-     */
-    function countCorrectionsPerAgency(agencies: Agency[]): {
-        agencyName: string;
-        correctionCount: number;
-    }[] {
+    function countCorrectionsPerAgency(agencies: Agency[]): Agency[] {
         return agencies.map((agency) => {
-            // Sum corrections across **all** CFR references of this agency
             const total = agency.cfr_references.reduce((sum, cfr) => {
-                // `corrections` is always defined (even if empty) because applyCorrections sets it
                 return sum + (cfr.corrections?.length ?? 0);
             }, 0);
 
             return {
-                ...agency, // or use `short_name` / `display_name` if you prefer
+                ...agency,
                 correctionCount: total,
             };
         });
+    }
+
+    function addTotalWordCount(agencies: Agency[] | undefined | null) {
+        if (!agencies) return;
+        agencies.forEach((agency) => {
+            const sum = agency.cfr_references.reduce((acc, cfr) => {
+                return acc + (cfr.details?.wordCount ?? 0);
+            }, 0);
+
+            (agency as Agency).totalWordCount = sum;
+        });
+
+        return agencies as Agency[];
     }
 
     const result = applyCorrections(
         agencies.agencies,
         corrections.ecfr_corrections
     );
+
+    function attachTitleDetails(
+        agencies: Agency[],
+        titleDetails: TitleDetail[] | undefined | null
+    ) {
+        if (!titleDetails) return;
+
+        const titleMap = new Map<number, TitleDetail>();
+        titleDetails.forEach((detail) => {
+            titleMap.set(detail.title, detail);
+        });
+
+        agencies.forEach((agency) => {
+            agency.cfr_references.forEach((cfr) => {
+                const detail = titleMap.get(cfr.title);
+                if (detail) {
+                    cfr.details = detail;
+                } else {
+                    cfr.details = undefined;
+                }
+            });
+        });
+
+        return agencies;
+    }
+
+    function addTotalCheckSum(agencies: Agency[] | undefined) {
+        if (!agencies) return;
+        agencies.forEach((agency) => {
+            const checksums = agency.cfr_references
+                .map((cfr) => cfr.details?.checksum)
+                .filter((cs): cs is string => typeof cs === "string");
+
+            const total = checksums.sort().join("");
+
+            (agency as Agency).totalCheckSum = total;
+        });
+
+        return agencies;
+    }
+
     const summary = countCorrectionsPerAgency(result);
+    const summaryWithDetails = attachTitleDetails(summary, titles);
+    const summaryWithWordCount = addTotalWordCount(summaryWithDetails);
+    const summaryWithTotalCheckSum = addTotalCheckSum(summaryWithWordCount);
+
+    if (summaryWithWordCount) console.log("Summary", summaryWithWordCount[4]);
 
     return (
         <main className="p-4 sm:p-6 lg:p-8">
-            <AgencyTable agencies={summary} />
+            <AgencyTable agencies={summaryWithTotalCheckSum || summary} />
         </main>
     );
 }
