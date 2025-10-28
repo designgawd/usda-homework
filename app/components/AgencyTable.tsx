@@ -75,47 +75,47 @@ export default function AgencyTable({ agencies }: AgencyTableProps) {
         onChange={handleSearchChange}
       />
       <div className="overflow-x-auto rounded-2xl">
-        <table className="min-w-full bg-white">
-          <thead className="bg-blue-600 text-white hidden md:block">
-            <tr className='grid grid-cols-1 md:grid-cols-12 text-sm items-end'>
-              <th className="py-3 px-6 text-left col-span-1 md:col-span-4">
+        <div className="min-w-full bg-white">
+          <div className="bg-blue-600 text-white hidden md:block">
+            <div className='grid grid-cols-1 md:grid-cols-12 text-sm items-end'>
+              <div className="py-3 px-6 text-left col-span-1 md:col-span-4">
                 <button onClick={(event) => handleRequestSort(event, 'name')} className="flex items-center underline">
                   Name
                   <span>{orderBy === 'name' ? (order === 'asc' ? ' ↑' : ' ↓') : ''}</span>
                 </button>
-              </th>
-              <th className="py-3 px-6 text-left md:col-span-2">
+              </div>
+              <div className="py-3 px-6 text-left md:col-span-2">
                 <button onClick={(event) => handleRequestSort(event, 'cfr_references')} className="flex items-center underline">
                   CFR References Links
                   <span>{orderBy === 'cfr_references' ? (order === 'asc' ? ' ↑' : ' ↓') : ''}</span>
                 </button>
-              </th>
-              <th className="py-3 px-6 text-left md:col-span-2 font-normal">
+              </div>
+              <div className="py-3 px-6 text-left md:col-span-2 font-normal">
                   Total Read Time
-              </th>
-              <th className="py-3 px-4 text-left md:col-span-1">
+              </div>
+              <div className="py-3 px-4 text-left md:col-span-1">
                 <button onClick={(event) => handleRequestSort(event, 'correctionCount')} className="flex items-center underline">
                   ECFR Corrections
                   <span>{orderBy === 'correctionCount' ? (order === 'asc' ? ' ↑' : ' ↓') : ''}</span>
                 </button>
-              </th>
+              </div>
               
-              <th className="py-3 px-6 text-center md:col-span-1 font-normal">
+              <div className="py-3 px-6 text-center md:col-span-1 font-normal">
                   Sub Agencies
-              </th>
+              </div>
               <td className="py-3 px-6 text-center md:col-span-2 text-sm">
                 Checksum Icon
               </td>
-            </tr>
-          </thead>
-          <tbody className="text-gray-700">
+            </div>
+          </div>
+          <div className="text-gray-700">
             {sortedAgencies
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((agency, index) => (
                 <AgencyRow key={agency.id} agency={agency} index={index} />
               ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
       <div className="flex justify-between items-center mt-4 bg-yellow-100 rounded-2xl p-2">
         <div>
