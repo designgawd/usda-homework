@@ -12,9 +12,9 @@ import { format, parseISO } from "date-fns";
 
 type DataPoint = {
     name: string; // e.g. "Record 3560"
-    occurred: number; // timestamp (ms)
-    corrected: number; // timestamp (ms)
-    lastModified: number; // timestamp (ms)
+    occurred: number | null; // timestamp (ms)
+    corrected: number | null; // timestamp (ms)
+    lastModified: number | null; // timestamp (ms)
 };
 // eslint-disable-next-line
 const prepareData = (raw: any[]): DataPoint[] => {
@@ -22,9 +22,15 @@ const prepareData = (raw: any[]): DataPoint[] => {
         const base = item.id ?? item.title ?? "Unknown";
         return {
             name: `Record ${base}`,
-            occurred: item.error_occurred ? parseISO(item.error_occurred).getTime() : "",
-            corrected: parseISO(item.error_corrected).getTime(),
-            lastModified: parseISO(item.last_modified).getTime(),
+            occurred: item.error_occurred
+                ? parseISO(item.error_occurred).getTime()
+                : null,
+            corrected: item.error_corrected
+                ? parseISO(item.error_corrected).getTime()
+                : null,
+            lastModified: item.last_modified
+                ? parseISO(item.last_modified).getTime()
+                : null,
         };
     });
 };
@@ -33,7 +39,7 @@ const prepareData = (raw: any[]): DataPoint[] => {
 // eslint-disable-next-line
 const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
-        const formatDate = (ts: number) => format(ts, "PPP");
+        const formatDate = (ts: number | null) => (ts ? format(ts, "PPP") : "N/A");
         return (
             <div
                 className="bg-white p-3 border border-gray-300 rounded shadow"
@@ -60,7 +66,7 @@ type Props = {
 
 export default function HistoricalGraph({ data }: Props) {
     const chartData = prepareData(data);
-    const formatTick = (ts: number) => format(ts, "MMM yyyy");
+    const formatTick = (ts: number | null) => (ts ? format(ts, "MMM yyyy") : "");
 
     return (
         <div style={{ width: "100%", height: 400 }}>
