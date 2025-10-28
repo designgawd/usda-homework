@@ -21,9 +21,9 @@ export default function AgencyRow({ agency, index }: AgencyRowProps) {
         if (hours === 0) {
             return `${mins} min`;
         } else if (mins === 0) {
-            return <div className={`${hours > 50 ? "text-yellow-500":""}`}>{`${hours} hr`}</div>;
+            return <span className={`${hours > 50 ? "text-yellow-500":""}`}>{`${hours} hr`}</span>;
         } else {
-            return <div className={`${hours > 100 ? "text-red-500 font-semibold": hours > 50 ? "text-orange-500":""}`}>{`${hours} hr ${mins} min`}</div>;
+            return <span className={`${hours > 100 ? "text-red-500 font-semibold": hours > 50 ? "text-orange-500":""}`}>{`${hours} hr ${mins} min`}</span>;
         }
     }
 
@@ -72,10 +72,10 @@ export default function AgencyRow({ agency, index }: AgencyRowProps) {
                                         <h3 className="text-[14px] font-semibold">Title {ag.title} - Chapter {ag.chapter}</h3>
                                         <p className="mb-2 min-h-[30px] text-[14px]">{ag.details.name}</p>
                                         <div className="mb-2">{ag.details?.checksum && <ChecksumIdenticon checksum={ag.details?.checksum} sizes={6} pixelSizes={20} />}</div>
-                                        <p className="mb-2"># of Sections: {ag.details.sectionCount}</p>
                                         <p className="mb-2">Number of Changes: {ag.corrections?.length}</p>
-                                        <p>Reading Time: {readingTime(ag.details.wordCount)}</p>
-                                        <p>Character Count: {ag.details.wordCount}</p>
+                                        <p><span className="font-semibold">Reading Time:</span> {readingTime(ag.details.wordCount)}</p>
+                                        <p><span className="font-semibold">Character Count:</span> {ag.details.wordCount}</p>
+                                        <p><span className="font-semibold">Sections Count:</span> {ag.details.sectionCount}</p>
                                     </div>
                                 )}
 
