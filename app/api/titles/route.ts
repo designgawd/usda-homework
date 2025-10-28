@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createHash } from "crypto";
+import { titlesData } from "@/app/utils/titles";
 
 let cachedAgencies: AgencyData[] | null = null;
 let lastFetched = 0;
@@ -15,7 +16,10 @@ type AgencyData = {
 };
 
 export async function GET() {
-    console.log("GETTING TITLES")
+
+    // using incode data as API below has performance issues
+    if(titlesData) return NextResponse.json(titlesData);
+    console.log("GETTING TITLES via API")
     if (cachedAgencies && Date.now() - lastFetched < CACHE_TTL) {
         console.log("USING CACHE")
         return NextResponse.json(cachedAgencies);
@@ -70,7 +74,7 @@ export async function GET() {
 
         return NextResponse.json(agencies);
     } catch (error) {
-        console.log(error)
+        console.log(error) // Log to server
         return NextResponse.json(
             { error: "Failed to process eCFR data" },
             { status: 500 }
