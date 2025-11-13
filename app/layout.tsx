@@ -25,6 +25,9 @@ export default async function RootLayout({
   const correctionsRes = await getCorrections();
   const corrections = await correctionsRes.json();
 
+  // console.log("Agencies:",agencies)
+  // console.log("Corrections:",corrections)
+
   const data = { agencies, corrections };
 
   return (

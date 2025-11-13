@@ -99,13 +99,12 @@ export default function AgencyTable({ agencies }: AgencyTableProps) {
                   <span>{orderBy === 'correctionCount' ? (order === 'asc' ? ' ↑' : ' ↓') : ''}</span>
                 </button>
               </div>
-              
               <div className="py-3 px-6 text-center md:col-span-1 font-normal">
                   Sub Agencies
               </div>
-              <td className="py-3 px-6 text-center md:col-span-2 text-sm">
+              <div className="py-3 px-6 text-center md:col-span-2 text-sm">
                 Checksum Icon
-              </td>
+              </div>
             </div>
           </div>
           <div className="text-gray-700">

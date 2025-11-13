@@ -1,14 +1,5 @@
-export interface CfrReference {
-    cfr_reference: string;
-    hierarchy: Hierarchy;
-}
-
-export interface Hierarchy {
-    title: string;
-    subtitle: string;
-    part: string;
-    subpart: string;
-    section: string;
+export interface CorrectionsResponse {
+    ecfr_corrections: Correction[];
 }
 
 export interface Correction {
@@ -25,8 +16,14 @@ export interface Correction {
   last_modified: string;
 }
 
-export interface CorrectionsResponse {
-    ecfr_corrections: Correction[];
+interface CFRReferenceInCorrection {
+  cfr_reference: string;
+  hierarchy: CFRHierarchy;
+}
+
+export interface CfrReference {
+    cfr_reference: string;
+    hierarchy: Hierarchy;
 }
 
 interface CFRHierarchy {
@@ -39,7 +36,17 @@ interface CFRHierarchy {
   section?: string;
 }
 
-interface CFRReferenceInCorrection {
-  cfr_reference: string;
-  hierarchy: CFRHierarchy;
+export interface Hierarchy {
+    title: string;
+    subtitle: string;
+    part: string;
+    subpart: string;
+    section: string;
 }
+
+
+
+
+
+
+

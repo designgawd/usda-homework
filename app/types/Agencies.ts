@@ -1,13 +1,8 @@
 import { Correction } from "./Corrections";
 
-
-export interface CfrReference {
-  title: number;
-  chapter: string;
-  corrections?: Correction[];
-  details?: TitleDetail;
+export interface AgenciesResponse {
+    agencies: Agency[];
 }
-
 export interface Agency {
   id: string;
   name: string;
@@ -22,13 +17,12 @@ export interface Agency {
   totalCheckSum: string;
 }
 
-export interface AgenciesResponse {
-    agencies: Agency[];
+export interface CfrReference {
+  title: number;
+  chapter: string;
+  corrections?: Correction[];
+  details?: TitleDetail;
 }
-
-export type Order = 'asc' | 'desc';
-
-export type SortableAgencyKeys = keyof Omit<Agency, 'children' | 'slug' | 'display_name' | 'sortable_name' | 'id'>;
 
 export interface TitleDetail {
   title: number;
@@ -38,3 +32,10 @@ export interface TitleDetail {
   checksum: string;
   sectionCount: number;
 }
+
+
+
+export type Order = 'asc' | 'desc';
+
+export type SortableAgencyKeys = keyof Omit<Agency, 'children' | 'slug' | 'display_name' | 'sortable_name' | 'id'>;
+

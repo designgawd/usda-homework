@@ -16,10 +16,10 @@ export default function AgencyRow({ agency, index }: AgencyRowProps) {
     const topRef = useRef<HTMLDivElement | null>(null);
 
     const handleScrollToTop = () => {
-    if (topRef.current) {
-      topRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+        if (topRef.current) {
+        topRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     function readingTime(charCount: number) {
         if(!charCount) return "Loading..."
@@ -94,13 +94,11 @@ export default function AgencyRow({ agency, index }: AgencyRowProps) {
                                     <h3 className="text-2xl mb-4 font-semibold">Historical Changes Over Time</h3>
                                     {ag.corrections?.length ? (
                                         <div>
-                                            <h3 className="text-2xl font-semibold italic ml-6 text-teal-500">Historical Chart</h3>
                                             <HistoricalGraph data={ag.corrections} />
                                         </div>
                                         ) : ""}
                                     {ag.corrections?.length ? (
                                         <div>
-                                            <h3 className="text-2xl font-semibold italic ml-6 text-teal-500">Day to Corrections</h3>
                                             <CorrectionSpeedScatter data={ag.corrections} />
                                         </div>
                                         ) : ""}

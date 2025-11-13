@@ -1,3 +1,8 @@
+export interface TitlesResponse {
+    titles: Title[];
+    meta: Meta;
+}
+
 export interface Title {
     number: number;
     name: string;
@@ -13,7 +18,3 @@ export interface Meta {
     import_in_progress: boolean;
 }
 
-export interface TitlesResponse {
-    titles: Title[];
-    meta: Meta;
-}

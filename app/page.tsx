@@ -130,7 +130,7 @@ export default function Home() {
     const summaryWithWordCount = addTotalWordCount(summaryWithDetails);
     const summaryWithTotalCheckSum = addTotalCheckSum(summaryWithWordCount);
 
-    if (summaryWithWordCount) console.log("Summary", JSON.stringify(summaryWithWordCount[4].cfr_references[0].corrections));
+    // if (summaryWithWordCount) console.log("Summary", JSON.stringify(summaryWithWordCount[4].cfr_references[0].corrections));
 
     return (
         <main className="p-4 sm:p-6 lg:p-8">
